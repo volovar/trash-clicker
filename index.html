@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Trash Clicker!</title>
+
+        <style>
+            body {
+                color: #333;
+                font: 16px/1.2em "Helvetica Neue", Arial, sans-serif;
+            }
+
+            h1 {
+                font-size: 1em;
+                line-height: 1.4em;
+                margin: 0;
+                text-transform: uppercase;
+            }
+
+            h2 {
+                font-size: 1em;
+                line-height: 1.4em;
+                margin: 0;
+            }
+
+            h3 {
+                font-size: 1em;
+                line-height: 1.4em;
+                margin: 0;
+            }
+
+            p {
+                margin: 0;
+            }
+
+            .display-flex {
+                display: -ms-flexbox;
+                display: -webkit-box;
+                display: -webkit-flex;
+                display: flex;
+            }
+
+            .flex-wrap {
+                -ms-flex-wrap: wrap;
+                -webkit-flex-wrap: wrap;
+                flex-wrap: wrap;
+            }
+
+            .space-between {
+                -webkit-justify-content: space-between;
+                justify-content: space-between;
+            }
+
+            .border-box {
+                -moz-box-sizing: border-box;
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+
+            .main {
+                margin: 0 auto;
+                max-width: 960px;
+                width: 92%;
+            }
+
+            .title {
+                padding: 32px 0 40px;
+                text-align: center;
+            }
+
+            .width-50 {
+                width: 50%;
+            }
+
+            .top-block {
+                margin-bottom: 16px;
+            }
+
+            .trash-button {
+                background-color: #888;
+                border: 0;
+                height: 300px;
+                width: 100%;
+            }
+
+            .trash-button:active {
+                background-color: #666;
+            }
+
+            .item-store {
+                padding-left: 32px;
+            }
+
+            .item-list {
+                list-style: none;
+                margin: 0;
+                padding: 40px 0 0;
+            }
+
+            .item {
+                cursor: pointer;
+                display: block;
+                margin-bottom: 8px;
+                padding: 8px 12px;
+                -moz-transition: background 120ms linear;
+                -webkit-transition: background 120ms linear;
+                transition: background 120ms linear;
+            }
+
+            .item:hover {
+                background: rgba(0,0,0,0.1);
+            }
+
+            .item-disabled {
+                background: rgba(0,0,0,0.1);
+                color: #999;
+                cursor: default;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="main">
+            <div class="title">
+                <h1>Trash Clicker</h1>
+                <h2>A garbage game about garbage</h2>
+            </div>
+
+            <div id="js-game" class="game display-flex flex-wrap space-between">
+                <div class="clicker border-box width-50">
+                    <div class="top-block display-flex flex-wrap space-between">
+                        <h2 id="js-score" class="score">0</h2>
+                        <button id="js-pause" class="pause">Pause</button>
+                    </div>
+
+                    <button id="js-trash-button" class="trash-button"></button>
+                </div>
+
+
+                <div class="item-store border-box width-50">
+                    <ul id="js-item-store" class="item-list"></ul>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            var game = document.getElementById('js-game');
+            var score = document.getElementById('js-score');
+            var scoreCounter = 0;
+            var pauseButton = document.getElementById('js-pause');
+            var paused;
+            var mainLoop;
+            var trashButton = document.getElementById('js-trash-button');
+            var store = document.getElementById('js-item-store');
+            var items = document.getElementsByClassName('js-item');
+            var itemList = [];
+
+            var Item = function (title, description, price, type, speed) {
+                this.title = title;
+                this.desc = description;
+                this.price = price;
+                this.purchased = 0;
+                this.type = type;
+                this.speed = 1000;
+            };
+
+            var raccoon = new Item('Raccoon', 'A feisty little creature that will get in your trash', 10, 'raccoon');
+            var garbagePerson = new Item('Garbage Person', 'This person comes to take your trash away', 100, 'gperson');
+            var oscar = new Item('Oscar, a grouch', 'A very unpleasant monster who wants to live in the trash', 500, 'grouch');
+
+            itemList.push(raccoon);
+            itemList.push(garbagePerson);
+            itemList.push(oscar);
+
+            startGame();
+
+            for (var i = 1; i <= itemList.length; i++) {
+                var title = createElement('h3', itemList[i - 1].title, '', 'item-name');
+                var price = createElement('span', itemList[i - 1].price, '', 'item-price');
+                var description = createElement('p', itemList[i - 1].desc, '', 'item-desc');
+                var purchased = createElement('span', itemList[i - 1].purchased, '', 'item-purchased');
+                var li = createElement('li', '', itemList[i - 1].type, ['js-item', 'item', 'item-disabled']);
+
+                li.appendChild(title);
+                li.appendChild(price);
+                li.appendChild(description);
+                li.appendChild(purchased);
+                store.appendChild(li);
+            }
+
+            for (var i = 1; i <= items.length; i++) {
+                items[i - 1].addEventListener('click', function (e) {
+                    purchaseItem(e, this, this.dataset.itemType);
+                });
+            }
+
+            trashButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                scoreCounter += 1;
+            });
+
+            pauseButton.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                if (paused) {
+                    startGame();
+                    e.target.innerHTML = 'Pause';
+                } else {
+                    pauseGame();
+                    e.target.innerHTML = 'Paused';
+                }
+            });
+
+            function purchaseItem (e, node, type) {
+                var children = node.children;
+                var child;
+
+                for (var i = 0; i < children.length; i++) {
+                    if (children[i].className = 'item-purchased') {
+                        child = children[i];
+                    }
+                }
+
+                for (var i = 1; i <= itemList.length; i++) {
+                    var item = itemList[i - 1];
+
+                    if (item.type == type) {
+                        if (scoreCounter >= item.price) {
+                            item.purchased += 1;
+                            child.innerHTML = item.purchased;
+                            scoreCounter -= item.price;
+                        }
+                    }
+                }
+            }
+
+            function createElement (elem, elemContent, elemData, elemClass, elemId) {
+                var newElem = document.createElement(elem);
+
+                newElem.innerHTML = elemContent;
+
+                if (elemData) {
+                    newElem.dataset.itemType = elemData;
+                }
+
+                if (elemId) {
+                    newElem.id = elemId;
+                }
+
+                if (elemClass) {
+                    if (Array.isArray(elemClass)) {
+                        for (var i = 1; i <= elemClass.length; i++) {
+                            newElem.className += ' ' + elemClass[i - 1];
+                        }
+                    } else {
+                        newElem.className = elemClass;
+                    }
+                }
+
+                return newElem;
+            }
+
+            function startGame () {
+                mainLoop = setInterval(function () {
+                    gameLoop();
+                }, 60);
+            }
+
+            function pauseGame () {
+                clearInterval(mainLoop);
+                paused = true;
+            }
+
+            function gameLoop () {
+                paused = false;
+                score.innerHTML = scoreCounter;
+                setAutoClick();
+                checkItemAvailable();
+
+                for (var i = 1; i <= itemList.length; i++) {
+                    var item = itemList[i - 1];
+                }
+            }
+
+            function checkItemAvailable () {
+                var listItems = document.getElementsByClassName('item');
+
+                for (var i = 0; i < itemList.length; i++) {
+                    var item = itemList[i];
+                    console.log(item);
+                    console.log(itemList.length);
+
+                    if (scoreCounter >= item.price) {
+                        for (var i = 0; i < listItems.length; i++) {
+                            if (listItems[i].dataset.itemType === item.type) {
+                                listItems[i].classList.remove('item-disabled');
+                            }
+                        }
+                    } else {
+                        for (var i = 0; i < listItems.length; i++) {
+                            if (listItems[i].dataset.itemType === item.type) {
+                                listItems[i].classList.add('item-disabled');
+                            }
+                        }
+                    }
+                }
+            }
+
+            function setAutoClick () {
+                for (var i = 1; i <= itemList.length; i++) {
+                    var item = itemList[i - 1];
+
+                    if (item.purchased > 0) {
+                        switch (item.type) {
+                            case 'raccoon':
+                                addClicker(1, item.purchased);
+                                break;
+                            case 'gperson':
+                                addClicker(10, item.purchased);
+                                break;
+                            case 'grouch':
+                                addClicker(25, item.purchased);
+                                break;
+                        }
+                    }
+                }
+            }
+
+            function addClicker (ability, total) {
+                scoreCounter += (ability * total) / 50;
+            }
+        </script>
+    </body>
+</html>
