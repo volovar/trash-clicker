@@ -1,3 +1,16 @@
+.transition(@args) {
+    -moz-transition: @args;
+    -webkit-transition: @args;
+    transition: @args;
+};
+
+.user-select(@args) {
+    -moz-user-select: @args;
+    -ms-user-select: @args;
+    -webkit-user-select: @args;
+    user-select: @args;
+}
+
 body {
     color: #333;
     font: 16px/1.2em "Helvetica Neue", Arial, sans-serif;
@@ -73,6 +86,7 @@ p {
     background-color: #888;
     border: 0;
     height: 300px;
+    .user-select(none);
     width: 100%;
 }
 
@@ -95,9 +109,8 @@ p {
     display: block;
     margin-bottom: 8px;
     padding: 8px 12px;
-    -moz-transition: background 120ms linear;
-    -webkit-transition: background 120ms linear;
-    transition: background 120ms linear;
+    .transition(background 120ms linear);
+    .user-select(none);
 }
 
 .item:hover {
