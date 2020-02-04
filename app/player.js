@@ -1,23 +1,19 @@
-var NPCData = require('./data/npc-data');
-var Entity = require('./entity');
-var props = require('./data/player-data');
-var components = [
-    'displayValue',
-    'incrementValue',
-    'decrementValue'
-];
+var NPCData = require("../src/data/itemData");
+var Entity = require("./entity");
+// var props = require("../src/data/player-data");
+var components = ["displayValue", "incrementValue", "decrementValue"];
 
-var Player =  Entity.createEntity(props, components);
+var Player = Entity.createEntity({}, components);
 
-Player.checkPurchases = function () {
+Player.checkPurchases = function() {
     return console.log(this.purchases);
-}
+};
 
-Player.checkNPCAmount = function (type) {
+Player.checkNPCAmount = function(type) {
     return console.log(this.purchases[type]);
-}
+};
 
-Player.purchaseNPC = function (type) {
+Player.purchaseNPC = function(type) {
     var cost = NPCData[type].value;
 
     if (this.score >= cost && cost !== undefined) {
@@ -29,8 +25,8 @@ Player.purchaseNPC = function (type) {
 
         this.score -= cost;
     } else {
-        console.log('need more money!');
+        console.log("need more money!");
     }
-}
+};
 
 module.exports = Player;

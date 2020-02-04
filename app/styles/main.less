@@ -2,7 +2,7 @@
     -moz-transition: @args;
     -webkit-transition: @args;
     transition: @args;
-};
+}
 
 .user-select(@args) {
     -moz-user-select: @args;
@@ -92,33 +92,4 @@ p {
 
 .trash-button:active {
     background-color: #666;
-}
-
-.item-store {
-    padding-left: 32px;
-}
-
-.item-list {
-    list-style: none;
-    margin: 0;
-    padding: 40px 0 0;
-}
-
-.item {
-    cursor: pointer;
-    display: block;
-    margin-bottom: 8px;
-    padding: 8px 12px;
-    .transition(background 120ms linear);
-    .user-select(none);
-}
-
-.item:hover {
-    background: rgba(0,0,0,0.1);
-}
-
-.item-disabled {
-    background: rgba(0,0,0,0.1);
-    color: #999;
-    cursor: default;
 }
