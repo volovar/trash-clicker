@@ -1,73 +1,76 @@
 (function() {
-    'use strict';
+    "use strict";
 
-    var game = document.getElementById('js-game');
-    var score = document.getElementById('js-score');
+    var game = document.getElementById("js-game");
+    var score = document.getElementById("js-score");
     var scoreCounter = 0;
-    var pauseButton = document.getElementById('js-pause');
+    var pauseButton = document.getElementById("js-pause");
     var paused;
     var mainLoop;
-    var trashButton = document.getElementById('js-trash-button');
+    var trashButton = document.getElementById("js-trash-button");
     var itemList = [];
 
-    var Player = require('./player');
-    var NPCData = require('./data/npc-data');
-    var NPCStore = require('./npc-store');
+    var Player = require("./player");
+    var NPCData = require("../src/data/itemData");
+    var NPCStore = require("./npc-store");
 
     // setting up the events
-    var initializeEvents = (function () {
-        trashButton.addEventListener('click', function (e) {
+    var initializeEvents = (function() {
+        trashButton.addEventListener("click", function(e) {
             e.preventDefault();
             Player.score += Player.currentValue;
         });
 
-        pauseButton.addEventListener('click', function (e) {
+        pauseButton.addEventListener("click", function(e) {
             e.preventDefault();
 
             if (paused) {
                 startGame();
-                e.target.innerHTML = 'Pause';
+                e.target.innerHTML = "Pause";
             } else {
                 pauseGame();
-                e.target.innerHTML = 'Paused';
+                e.target.innerHTML = "Paused";
             }
         });
-    }())
+    })();
 
-    var initGame = (function () {
+    var initGame = (function() {
         NPCStore.init();
         startGame();
-    }());
+    })();
 
-    function startGame () {
-        mainLoop = setInterval(function () {
+    function startGame() {
+        mainLoop = setInterval(function() {
             gameLoop();
         }, 60);
     }
 
-    function pauseGame () {
+    function pauseGame() {
         clearInterval(mainLoop);
         paused = true;
     }
 
-    function gameLoop () {
+    function gameLoop() {
         paused = false;
-        score.innerHTML = (Player.score / 100).toString().split('.')[0];
+        score.innerHTML = (Player.score / 100).toString().split(".")[0];
         createAutoClickers();
         NPCStore.updateItemAvailability();
         NPCStore.updatePurchaseCounts();
     }
 
     // auto clickers
-    function createAutoClickers () {
+    function createAutoClickers() {
         var purchase;
 
         for (purchase in Player.purchases) {
-            addClicker(NPCData[purchase].clickValue, Player.purchases[purchase]);
+            addClicker(
+                NPCData[purchase].clickValue,
+                Player.purchases[purchase]
+            );
         }
     }
 
-    function addClicker (clickValue, purchased) {
+    function addClicker(clickValue, purchased) {
         Player.score += clickValue * purchased;
     }
-}());
+})();

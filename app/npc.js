@@ -1,13 +1,9 @@
-var Entity = require('./entity');
-var npcData = require('./data/npc-data');
-var components = [
-    'displayValue',
-    'incrementValue',
-    'decrementValue'
-];
+var Entity = require("./entity");
+var npcData = require("../src/data/itemData");
+var components = ["displayValue", "incrementValue", "decrementValue"];
 
 var NPCs = {
-    createNew: function (type) {
+    createNew: function(type) {
         return Entity.createEntity(npcData[type], components);
     }
 };

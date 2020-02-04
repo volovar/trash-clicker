@@ -1,12 +1,35 @@
 {
   "name": "trash-clicker",
   "version": "0.2.0",
-  "private": "true",
+  "description": "Quick start setup for a React project",
+  "main": "index.js",
+  "dependencies": {
+    "@babel/core": "^7.7.7",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "@emotion/babel-preset-css-prop": "^10.0.27",
+    "@emotion/core": "^10.0.27",
+    "babel-loader": "^8.0.6",
+    "html-webpack-plugin": "^3.2.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.1"
+  },
   "devDependencies": {
-    "brunch": "^2.5.1",
-    "clean-css-brunch": "^2.0.0",
-    "javascript-brunch": "^2.0.0",
-    "less-brunch": "^2.0.0",
-    "uglify-js-brunch": "^2.0.1"
-  }
+    "eslint": "^6.8.0",
+    "eslint-plugin-react": "^7.17.0"
+  },
+  "scripts": {
+    "build": "webpack",
+    "dist": "webpack --env.production",
+    "reset-git": "rm -rf .git && git init",
+    "start": "webpack-dev-server",
+    "start-prod": ""
+  },
+  "author": "Mike Volovar",
+  "license": "ISC"
 }
