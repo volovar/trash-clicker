@@ -17,7 +17,8 @@
     "react-dom": "^16.12.0",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.10.1"
+    "webpack-dev-server": "^3.10.1",
+    "snyk": "^1.319.0"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
@@ -28,8 +29,11 @@
     "dist": "webpack --env.production",
     "reset-git": "rm -rf .git && git init",
     "start": "webpack-dev-server",
-    "start-prod": ""
+    "start-prod": "",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "author": "Mike Volovar",
-  "license": "ISC"
+  "license": "ISC",
+  "snyk": true
 }
